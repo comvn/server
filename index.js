@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
 
   fs.readFile(filePath, 'utf8', (err, content) => {
     if (err) return res.status(500).send('Error reading file');
-    console.log(data);
+    console.log(content);
     res.send(content);
   });
 });
