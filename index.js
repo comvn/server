@@ -4,7 +4,7 @@ const express = require("express");
 const fs = require('fs');
 const path = require('path');
 
-const filePath = path.join(__dirname, 'db.json');
+
 
 
 
@@ -35,11 +35,13 @@ app.use(async (req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) throw err;
+  const filePath = path.join(__dirname, 'db.json');
+
+  fs.readFile(filePath, 'utf8', (err, content) => {
+    if (err) return res.status(500).send('Error reading file');
     console.log(data);
+    res.send(content);
   });
-  res.json({ message: data });
 });
 
 app.post("/", (req, res) => {
