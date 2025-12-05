@@ -1,19 +1,11 @@
-const jsonServer = require('json-server');
+const jsonServer = require("json-server");
 const server = jsonServer.create();
-const router = jsonServer.router('db.json');
+const router = jsonServer.router("db.json"); // Path to your db.json
 const middlewares = jsonServer.defaults();
+const port = process.env.PORT || 3000; // Render will provide a PORT environment variable
 
 server.use(middlewares);
-server.use(jsonServer.bodyParser);
-
-// Fake delay
-server.use((req, res, next) => {
-  console.log("setTimeout 100ms");
-  setTimeout(next, 100);
-});
-
 server.use(router);
-
-server.listen(process.env.PORT || 3000, () => {
-  console.log("JSON Server is running");
+server.listen(port, () => {
+  console.log(`JSON Server is running on port ${port}`);
 });
