@@ -1,53 +1,19 @@
-require("dotenv").config();
-const express = require("express");
+const jsonServer = require('json-server');
+const server = jsonServer.create();
+const router = jsonServer.router('db.json');
+const middlewares = jsonServer.defaults();
 
-const fs = require('fs');
-const path = require('path');
+server.use(middlewares);
+server.use(jsonServer.bodyParser);
 
-
-
-
-
-
-const app = express();
-const port = process.env.PORT || 3000;
-
-app.use(express.json());
-
-app.use(async (req, res, next) => {
-
-  const userAgent = req.headers['user-agent'] || '';
-
-  if (userAgent.toLowerCase().includes('cron-job.org')) {
-    console.log('cron-job.org is working! Api alive.');
-  }
-  else {
-    const logData = {
-      method: req.method,
-      url: req.originalUrl,
-      headers: req.headers,
-      body: req.body,
-    };
-
-    console.log(JSON.stringify(logData, null, 2));
-  }
-  next();
+// Fake delay
+server.use((req, res, next) => {
+  console.log("setTimeout 100ms");
+  setTimeout(next, 100);
 });
 
-app.get("/", (req, res) => {
-  const filePath = path.join(__dirname, 'db.json');
+server.use(router);
 
-  fs.readFile(filePath, 'utf8', (err, content) => {
-    if (err) return res.status(500).send('Error reading file');
-    console.log(content);
-    res.send(content);
-  });
-});
-
-app.post("/", (req, res) => {
-  res.json({ message: "Post OK" });
-});
-
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+server.listen(process.env.PORT || 3000, () => {
+  console.log("JSON Server is running");
 });
